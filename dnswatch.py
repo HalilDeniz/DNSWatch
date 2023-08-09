@@ -25,7 +25,7 @@ def resolve_dns_doh(dns_request):
             print(f"{Fore.RED}[!] Error resolving DNS over HTTPS: {e}{Style.RESET_ALL}")
 
     return None
-def dns_sniffer(pkt, verbose, output_file, victim_ip=None, analyze_dns_types=False, use_doh=False):
+def dns_sniffer(pkt, verbose, output_file, victim_ip=None, analyze_dns_types=False, use_doh=False, filter_domains=[]):
     if victim_ip and pkt[IP].src != victim_ip and pkt[IP].dst != victim_ip:
         return
 
@@ -36,14 +36,20 @@ def dns_sniffer(pkt, verbose, output_file, victim_ip=None, analyze_dns_types=Fal
         dns_dest_ip = pkt[IP].dst
         timestamp = pkt.time
 
+        if filter_domains and not any(domain in dns_request for domain in filter_domains):
+            return  # Skip DNS requests that don't match filter domains
+
+        print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request  from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type})")
+
+
         if use_doh:
             resolved_ips = resolve_dns_doh(dns_request)
             if resolved_ips:
-                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request (DoH) from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type}) - Resolved IPs: {', '.join(resolved_ips)}")
+                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request  (DoH) from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type}) - Resolved IPs: {', '.join(resolved_ips)}")
             else:
-                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request (DoH) from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type}) - Resolved IPs: (Cannot resolve with DoH)")
+                print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request  (DoH) from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type}) - Resolved IPs: (Cannot resolve with DoH)")
         else:
-            print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type})")
+            print(f"{Fore.GREEN}[+]{Style.RESET_ALL} DNS Request  from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_request} (Type: {dns_type})")
 
         if dns_request in dns_requests:
             dns_requests[dns_request][0] += 1
@@ -61,7 +67,7 @@ def dns_sniffer(pkt, verbose, output_file, victim_ip=None, analyze_dns_types=Fal
 
         if output_file:
             with open(output_file, "a") as file:
-                file.write(f"DNS Request from {dns_src_ip} to {dns_dest_ip} at {timestamp:.6f}: {dns_request} (Type: {dns_type})\n")
+                file.write(f"DNS Request  from {dns_src_ip} to {dns_dest_ip} at {timestamp:.6f}: {dns_request} (Type: {dns_type})\n")
 
     if pkt.haslayer(DNSRR):
         dns_response = pkt[DNSRR].rrname.decode()
@@ -69,6 +75,9 @@ def dns_sniffer(pkt, verbose, output_file, victim_ip=None, analyze_dns_types=Fal
         dns_src_ip = pkt[IP].src
         dns_dest_ip = pkt[IP].dst
         timestamp = pkt.time
+
+        if filter_domains and not any(domain in dns_response for domain in filter_domains):
+            return  # Skip DNS responses that don't match filter domains
 
         print(f"{Fore.BLUE}[+]{Style.RESET_ALL} DNS Response from {Fore.CYAN}{dns_src_ip}{Style.RESET_ALL} to {Fore.CYAN}{dns_dest_ip}{Style.RESET_ALL} at {Fore.YELLOW}{timestamp:.6f}{Style.RESET_ALL}: {dns_response} (Type: {dns_type})")
 
@@ -117,6 +126,7 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--victim-ip", help="Specify specific victim IP address to monitor")
     parser.add_argument("--analyze-dns-types", help="Use this flag to analyze DNS types", action="store_true")
     parser.add_argument("--doh", help="DNS over HTTPS (DoH) use this flag to use", action="store_true")
+    parser.add_argument("-fd", "--filter-domains", nargs="+", help="Filter DNS requests by specified domains", default=[])
     args = parser.parse_args()
 
     iface = args.interface
@@ -125,7 +135,8 @@ if __name__ == "__main__":
     try:
         sniff(iface=iface, filter=filter_rule,
               prn=lambda pkt: dns_sniffer(pkt, args.verbose, args.output, args.victim_ip, args.analyze_dns_types,
-                                          args.doh))
+                                          args.doh, args.filter_domains))
+
     except PermissionError:
         print(
             f"{Fore.RED}Error: You do not have sufficient privileges. Try running the program with 'sudo'.{Style.RESET_ALL}")
