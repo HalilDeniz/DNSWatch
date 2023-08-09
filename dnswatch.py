@@ -123,7 +123,7 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--interface", help="Specify the network interface, for example 'eth0'", required=True)
     parser.add_argument("-v", "--verbose", help="Use this flag to get more verbose output", action="store_true")
     parser.add_argument("-o", "--output", help="Specify the filename to save the results to a file")
-    parser.add_argument("-k", "--victim-ip", help="Specify specific victim IP address to monitor")
+    parser.add_argument("-t", "--target", help="Specify specific victim IP address to monitor")
     parser.add_argument("--analyze-dns-types", help="Use this flag to analyze DNS types", action="store_true")
     parser.add_argument("--doh", help="DNS over HTTPS (DoH) use this flag to use", action="store_true")
     parser.add_argument("-fd", "--filter-domains", nargs="+", help="Filter DNS requests by specified domains", default=[])
@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
     try:
         sniff(iface=iface, filter=filter_rule,
-              prn=lambda pkt: dns_sniffer(pkt, args.verbose, args.output, args.victim_ip, args.analyze_dns_types,
+              prn=lambda pkt: dns_sniffer(pkt, args.verbose, args.output, args.target, args.analyze_dns_types,
                                           args.doh, args.filter_domains))
 
     except PermissionError:
