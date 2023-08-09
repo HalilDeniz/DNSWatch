@@ -8,6 +8,7 @@ DNSWatch is a Python-based tool that allows you to sniff and analyze DNS (Domain
 - Optional verbose mode for detailed packet inspection.
 - Save the results to a specified output file.
 - Filter DNS traffic by specifying a victim IP address.
+- Filter DNS traffic by specifying specific domains.
 - Analyze DNS types (optional).
 - Support for DNS over HTTPS (DoH) (optional).
 
@@ -70,6 +71,12 @@ python dnswatch.py -i eth0 -k 192.168.1.100
 
 ```bash
 python dnswatch.py -i eth0 --analyze-dns-types
+```
+
+- Sniff DNS traffic on interface "interface" and filter requests involving specific domains:
+
+```bash
+python dnswatch.py -i eth0 -f google.com,youtube.com
 ```
 
 - Sniff DNS traffic on interface "eth0" using DNS over HTTPS (DoH):
