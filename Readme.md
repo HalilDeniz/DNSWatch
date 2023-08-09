@@ -51,31 +51,31 @@ Press `Ctrl+C` to stop the sniffing process.
 - Sniff DNS traffic on interface "eth0":
 
 ```bash
-python dnssnif.py -i eth0
+python dnswatch.py -i eth0
 ```
 
 - Sniff DNS traffic on interface "eth0" and save the results to a file:
 
 ```bash
-python dnssnif.py -i eth0 -o dns_results.txt
+python dnswatch.py -i eth0 -o dns_results.txt
 ```
 
 - Sniff DNS traffic on interface "eth0" and filter requests/responses involving a specific victim IP:
 
 ```bash
-python dnssnif.py -i eth0 -k 192.168.1.100
+python dnswatch.py -i eth0 -k 192.168.1.100
 ```
 
 - Sniff DNS traffic on interface "eth0" and enable DNS type analysis:
 
 ```bash
-python dnssnif.py -i eth0 --analyze-dns-types
+python dnswatch.py -i eth0 --analyze-dns-types
 ```
 
 - Sniff DNS traffic on interface "eth0" using DNS over HTTPS (DoH):
 
 ```bash
-python dnssnif.py -i eth0 --doh
+python dnswatch.py -i eth0 --doh
 ```
 
 ## License
