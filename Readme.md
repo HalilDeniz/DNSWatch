@@ -8,7 +8,7 @@ DNSWatch is a Python-based tool that allows you to sniff and analyze DNS (Domain
 - Optional verbose mode for detailed packet inspection.
 - Save the results to a specified output file.
 - Filter DNS traffic by specifying a target IP address.
-- Filter DNS traffic by specifying specific domains.
+- Save DNS requests in a database for further analysis(optional)
 - Analyze DNS types (optional).
 - Support for DNS over HTTPS (DoH) (optional).
 
@@ -35,57 +35,52 @@ pip install -r requirements.txt
 ## Usage
 
 ```
-python dnswatch.py -i <interface> [-v] [-o <output_file>] [-k <victim_ip>] [--analyze-dns-types] [--doh]
+python dnswatch.py -i <interface> [-v] [-o <output_file>] [-k <target_ip>] [--analyze-dns-types] [--doh]
 ```
 
-- `-i`, `--interface`: Specify the network interface to sniff DNS traffic (e.g., "eth0").
-- `-v`, `--verbose`: Enable verbose mode for detailed packet inspection (optional).
-- `-o`, `--output`: Specify the output file to save the results (optional).
-- `-k`, `--target`: Filter DNS traffic by providing a victim IP address (optional).
-- `--analyze-dns-types`: Enable DNS type analysis (optional).
-- `-f`, `--domain-filter`: Filter DNS traffic by specifying specific domains (optional, comma-separated).
-- `--doh`: Use DNS over HTTPS (DoH) for DNS resolution (optional).
+- `-i`, `--interface`: Specify the network interface (e.g., eth0).
+- `-v`, `--verbose`: Use this flag for more verbose output.
+- `-o`, `--output`: Specify the filename to save results.
+- `-t`, `--target-ip`: Specify a specific target IP address to monitor.
+- `-adt`, `--analyze-dns-types`: Analyze DNS types.
+- `--doh`: Use DNS over HTTPS (DoH) for resolving DNS requests.
+- `-fd`, `--target-domains`: Filter DNS requests by specified domains.
+- `-d`, `--database`: Enable database storage for DNS requests.
 
 Press `Ctrl+C` to stop the sniffing process.
 
 ## Examples
 
 - Sniff DNS traffic on interface "eth0":
-
 ```bash
-python dnswatch.py -i eth0
+python dnssnif.py -i eth0
 ```
 
 - Sniff DNS traffic on interface "eth0" and save the results to a file:
-
 ```bash
-python dnswatch.py -i eth0 -o dns_results.txt
+python dnssnif.py -i eth0 -o dns_results.txt
 ```
 
-- Sniff DNS traffic on interface "eth0" and filter requests/responses involving a specific victim IP:
-
+- Sniff DNS traffic on interface "eth0" and filter requests/responses involving a specific target IP:
 ```bash
-python dnswatch.py -i eth0 -t 192.168.1.100
+python dnssnif.py -i eth0 -k 192.168.1.100
 ```
 
 - Sniff DNS traffic on interface "eth0" and enable DNS type analysis:
-
 ```bash
-python dnswatch.py -i eth0 --analyze-dns-types
-```
-
-- Sniff DNS traffic on interface "interface" and filter requests involving specific domains:
-
-```bash
-python dnswatch.py -i eth0 -f google.com,youtube.com
+python dnssnif.py -i eth0 --analyze-dns-types
 ```
 
 - Sniff DNS traffic on interface "eth0" using DNS over HTTPS (DoH):
 
 ```bash
-python dnswatch.py -i eth0 --doh
+python dnssnif.py -i eth0 --doh
 ```
 
+- Sniff DNS traffic on interface "wlan0" and Enable database storage
+```bash
+python3 dnswatch.py -i wlan0 --database
+```
 ## License
 
 DNSWatch is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
@@ -104,6 +99,7 @@ This tool is intended for educational and testing purposes only. It should not b
 - Mysite   : https://denizhalil.com/
 
 ## 💰 You can help me by Donating
+Thank you for considering supporting me! Your support enables me to dedicate more time and effort to creating useful tools like DNSWatch and developing new projects. By contributing, you're not only helping me improve existing tools but also inspiring new ideas and innovations. Your support plays a vital role in the growth of this project and future endeavors. Together, let's continue building and learning. Thank you!"
 [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/halildeniz) 
 [![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/denizhalil) 
 
