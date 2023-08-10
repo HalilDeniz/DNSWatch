@@ -43,6 +43,7 @@ python dnswatch.py -i <interface> [-v] [-o <output_file>] [-k <victim_ip>] [--an
 - `-o`, `--output`: Specify the output file to save the results (optional).
 - `-k`, `--target`: Filter DNS traffic by providing a victim IP address (optional).
 - `--analyze-dns-types`: Enable DNS type analysis (optional).
+- `-f`, `--domain-filter`: Filter DNS traffic by specifying specific domains (optional, comma-separated).
 - `--doh`: Use DNS over HTTPS (DoH) for DNS resolution (optional).
 
 Press `Ctrl+C` to stop the sniffing process.
