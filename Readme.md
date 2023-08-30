@@ -64,7 +64,7 @@ python dnswatch.py -i eth0 -o dns_results.txt
 
 - Sniff DNS traffic on interface "eth0" and filter requests/responses involving a specific target IP:
 ```bash
-python dnswatch.py -i eth0 -k 192.168.1.100
+python dnswatch.py -i eth0 -t 192.168.1.100
 ```
 
 - Sniff DNS traffic on interface "eth0" and enable DNS type analysis:
