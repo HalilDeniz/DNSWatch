@@ -1,0 +1,5 @@
+#TODO: Include summary package_data into user install path
+include README.md
+include SECURITY.md
+include LICENSE
+include requirements.txt

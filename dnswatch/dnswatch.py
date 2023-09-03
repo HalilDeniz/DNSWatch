@@ -10,7 +10,10 @@ from scapy.layers.inet import IP
 from scapy.sendrecv import sniff
 from scapy.all import sniff, Ether
 
-from source.dnsdata import DNSDataStorage
+try:
+    from .dnsdata import DNSDataStorage
+except ImportError:
+    from dnsdata import DNSDataStorage
 
 dns_requests = {}
 dns_types = {}
@@ -239,7 +242,7 @@ def dns_data_analysis():
         print("No DNS requests to analyze.")
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="DNS Sniffer")
     parser.add_argument("-i", "--interface", help="Specify the network interface, for example 'eth0'", required=True)
     parser.add_argument("-v", "--verbose", help="Use this flag to get more verbose output", action="store_true")
@@ -277,4 +280,8 @@ if __name__ == "__main__":
         pass
 
     dns_data_analysis()
+
+
+if __name__ == "__main__":
+    main()
 
