@@ -2,18 +2,13 @@
 
 import requests
 import argparse
-from scapy.all import *
 from colorama import Fore, Style
-from datetime import datetime, timedelta
+from datetime import datetime
 from scapy.layers.dns import DNSQR, DNSRR
 from scapy.layers.inet import IP
-from scapy.sendrecv import sniff
-from scapy.all import sniff, Ether
+from scapy.all import sniff, Ether, wrpcap
 
-try:
-    from .dnsdata import DNSDataStorage
-except ImportError:
-    from dnsdata import DNSDataStorage
+from source.dnsdata import DNSDataStorage
 
 dns_requests = {}
 dns_types = {}
@@ -212,7 +207,7 @@ def dns_sniffer(pkt, verbose, output_file, target_ip=None, analyze_dns_types=Fal
 
 def dns_data_analysis():
     if dns_requests:
-        print("\nDNS Data Analysis:")
+        print(f"\n\t{Fore.CYAN}DNS Data Analysis{Style.RESET_ALL}")
         total_requests = sum(count for count, _ in dns_requests.values())
         unique_domains = len(dns_requests)
         most_requested = max(dns_requests, key=lambda x: dns_requests[x][0])
@@ -226,16 +221,16 @@ def dns_data_analysis():
                 else:
                     resolved_by_counts[ip] = 1
 
-        print(f"Total DNS Requests: {total_requests}")
-        print(f"Unique Domains: {unique_domains}")
-        print(f"Most Requested Domain: {most_requested} (Count: {most_requested_count})")
+        print(f"{Fore.GREEN}Total DNS Requests   :{Style.RESET_ALL} {total_requests}")
+        print(f"{Fore.GREEN}Unique Domains       :{Style.RESET_ALL} {unique_domains}")
+        print(f"{Fore.GREEN}Most Requested Domain:{Style.RESET_ALL} {most_requested} (Count: {most_requested_count})")
 
-        print("\nMost Resolved by:")
+        print(f"\n{Fore.CYAN}\tMost Resolved by{Style.RESET_ALL}")
         for ip, count in resolved_by_counts.items():
             print(f"{ip} : {count}")
 
         if dns_types:
-            print("\nDNS Type Analysis:")
+            print(f"\nDNS Type Analysis:")
             for dns_type, count in dns_types.items():
                 print(f"Type: {dns_type} - Count: {count}")
     else:
@@ -246,12 +241,13 @@ def main():
     parser = argparse.ArgumentParser(description="DNS Sniffer")
     parser.add_argument("-i", "--interface", help="Specify the network interface, for example 'eth0'", required=True)
     parser.add_argument("-v", "--verbose", help="Use this flag to get more verbose output", action="store_true")
-    parser.add_argument("-o", "--output", help="Specify the filename to save the results to a file")
     parser.add_argument("-t", "--target-ip", help="Specify specific target IP address to monitor")
     parser.add_argument("-adt", "--analyze-dns-types", help="Use this flag to analyze DNS types", action="store_true")
     parser.add_argument("--doh", help="DNS over HTTPS (DoH) use this flag to use", action="store_true")
     parser.add_argument("-fd", "--target-domains", nargs="+", help="Filter DNS requests by specified domains", default=[])
+    parser.add_argument("-o", "--output", help="Specify the filename to save the results to a file")
     parser.add_argument("-d", "--database", help="Enable database storage", action="store_true")
+    parser.add_argument("-p", "--pcap", help="Save captured packets to a .pcap file", default=None)
     args = parser.parse_args()
 
     iface = args.interface
@@ -261,10 +257,27 @@ def main():
         print(f"{Fore.MAGENTA}\t\tDNS Packet Sniffer started...{Style.RESET_ALL}")
         dns_storage = DNSDataStorage() if args.database else None  # Database Storage'ı isteğe bağlı olarak etkinleştirin
 
-        sniff(iface=iface, filter=filter_rule,
-              prn=lambda pkt: dns_sniffer(pkt, args.verbose, args.output, args.target_ip, args.analyze_dns_types,
-                                          args.doh, args.target_domains, dns_storage))
+        if args.pcap:
+            pcap_filename = args.pcap
+            print(f"Saving captured packets to '{pcap_filename}'")
+            packets = []
 
+
+            def packet_callback(pkt):
+                packets.append(pkt)
+                dns_sniffer(pkt, args.verbose, args.output, args.target_ip, args.analyze_dns_types,
+                            args.doh, args.target_domains, dns_storage)
+
+
+            try:
+                sniff(iface=iface, filter=filter_rule, prn=packet_callback)
+            except KeyboardInterrupt:
+                pass
+            wrpcap(pcap_filename, packets)
+        else:
+            sniff(iface=iface, filter=filter_rule,
+                  prn=lambda pkt: dns_sniffer(pkt, args.verbose, args.output, args.target_ip, args.analyze_dns_types,
+                                              args.doh, args.target_domains, dns_storage))
     except PermissionError:
         print(
             f"{Fore.RED}Error: You do not have sufficient privileges. Try running the program with 'sudo'.{Style.RESET_ALL}")
@@ -279,9 +292,8 @@ def main():
     except KeyboardInterrupt:
         pass
 
-    dns_data_analysis()
 
+    dns_data_analysis()
 
 if __name__ == "__main__":
     main()
-
