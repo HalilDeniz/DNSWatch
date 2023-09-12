@@ -47,7 +47,7 @@ python dnswatch.py -i <interface> [-v] [-o <output_file>] [-k <target_ip>] [--an
 - `--doh`: Use DNS over HTTPS (DoH) for resolving DNS requests.
 - `-fd`, `--target-domains`: Filter DNS requests by specified domains.
 - `-d`, `--database`: Enable database storage for DNS requests.
-
+- `-p`, `--pcap`: Save captured packets to a .pcap file
 Press `Ctrl+C` to stop the sniffing process.
 
 ## Examples
