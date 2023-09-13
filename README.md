@@ -1,6 +1,6 @@
 # DNSWatch - DNS Traffic Sniffer and Analyzer
 DNSWatch is a Python-based tool that allows you to sniff and analyze DNS (Domain Name System) traffic on your network. It listens to DNS requests and responses and provides insights into the DNS activity.
-<img src="etc/dnswatch1.png">
+<img src="etc/dnswatch2.png">
 
 ## Features
 
