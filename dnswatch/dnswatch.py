@@ -8,7 +8,7 @@ from scapy.layers.dns import DNSQR, DNSRR
 from scapy.layers.inet import IP
 from scapy.all import sniff, Ether, wrpcap
 
-from source.dnsdata import DNSDataStorage
+from dnsdata import DNSDataStorage
 
 dns_requests = {}
 dns_types = {}
