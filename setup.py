@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='dnswatch',
-    version='1.0.0',
+    version='2.1.0',
     packages=find_packages(),
     install_requires=[
         'requests',
@@ -16,7 +16,7 @@ setup(
         ],
     },
     author='Halil Ibrahim Deniz',
-    long_description=open('README.md').read(),
+    long_description=open('Readme.md').read(),
     author_email='halildeniz313@gmail.com',
     description='DNS sniffer tool',
     license='MIT',
