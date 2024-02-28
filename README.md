@@ -1,17 +1,27 @@
 # DNSWatch - DNS Traffic Sniffer and Analyzer
-DNSWatch is a Python-based tool that allows you to sniff and analyze DNS (Domain Name System) traffic on your network. It listens to DNS requests and responses and provides insights into the DNS activity.
+DNSWatch is a powerful packet sniffing tool designed to monitor and analyze DNS (Domain Name System) traffic on a network. This script provides a comprehensive set of features to help users understand and manage DNS activity efficiently. Whether you're a network administrator, cybersecurity professional, or a curious enthusiast, DNSWatch empowers you to gain insights into DNS requests, detect anomalies, and enhance network security.
+
+
+
 <img src="img/dnswatch.png">
 
 ## Features
 
-- Sniff and analyze DNS requests and responses.
-- Display DNS requests with their corresponding source and destination IP addresses.
-- Optional verbose mode for detailed packet inspection.
-- Save the results to a specified output file.
-- Filter DNS traffic by specifying a target IP address.
-- Save DNS requests in a database for further analysis(optional)
-- Analyze DNS types (optional).
-- Support for DNS over HTTPS (DoH) (optional).
+- **DNS Packet Sniffing**: The script can sniff DNS packets on the network interface specified by the user.
+- **Verbose Output**: It provides detailed output if the user enables the verbose mode
+- **Target IP Analysis**: Users can specify a target IP address to analyze DNS responses 
+- **DNS Type Analysis**: Users can analyze different types of DNS requests.
+- **DNS over HTTPS (DoH)**: Users can enable DNS resolution using DNS over HTTPS.
+- **Target Domain Monitoring**: Users can specify a list of target domains to monitor.
+- **Port Filtering**: It supports filtering by source or destination port.
+- **IP Filtering**: Users can filter packets by source or destination IP address.
+- **DNS Type Filtering**: allows users to filter packets by DNS type.
+- **PCAP File Saving**: Users can save captured packets to a PCAP file.
+- **DNS Firewall Mode**: The DNS firewall mode for detecting DNS spoofing attempts.
+- **Threshold Setting**: Users can set the threshold for the number of DNS queries .
+- **Window Size Configuration**: Allows users to configure the window size (in seconds) for monitoring.
+- **Version Information**: Users can check the version of the script.
+
 
 ## Requirements
 
@@ -32,63 +42,97 @@ git clone https://github.com/HalilDeniz/DNSWatch.git
 ```bash
 pip install -r requirements.txt
 ```
----
-
-## 📖 BONUS: My Book
-
-I'm excited to share my book, **"Mastering Scapy: A Comprehensive Guide to Network Analysis."** You can explore it [here](https://denizhalil.com/2023/11/12/scapy-guide-to-network-analysis-book/).
-
----
 
 ## Usage
 
 ```
-python dnswatch.py -i <interface> [-v] [-o <output_file>] [-k <target_ip>] [--analyze-dns-types] [--doh]
+$ python3 dnswatch.py [-h] [-i INTERFACE] [-v] [-t TARGET_IP] [-d] [--doh] [-D TARGET_DOMAINS [TARGET_DOMAINS ...]] [-p FILTER_PORT] [-s FILTER_SRC_IP] [-r FILTER_DST_IP] [--dns-type DNS_TYPE] [--pcap-file PCAP_FILE] [--firewall] [--threshold THRESHOLD] [--window-size WINDOW_SIZE] [--version]```
 ```
 
-- `-i`, `--interface`: Specify the network interface (e.g., eth0).
-- `-v`, `--verbose`: Use this flag for more verbose output.
-- `-o`, `--output`: Specify the filename to save results.
-- `-t`, `--target-ip`: Specify a specific target IP address to monitor.
-- `-adt`, `--analyze-dns-types`: Analyze DNS types.
-- `--doh`: Use DNS over HTTPS (DoH) for resolving DNS requests.
-- `-fd`, `--target-domains`: Filter DNS requests by specified domains.
-- `-d`, `--database`: Enable database storage for DNS requests.
-- `-p`, `--pcap`: Save captured packets to a .pcap file
+1. `-i, --interface`: Used to specify the network interface to listen on. For example: `-i eth0`
+2. `-v, --verbose`: Use this flag to get detailed output.
+3. `-t, --target-ip`: Used to specify a specific IP address to monitor. For example: `-t 8.8.8.8`
+4. `-d, --analyze-dns-type`: Use this flag to analyze DNS types.
+5. `--doh`: Use DNS over HTTPS (DoH) for DNS resolution.
+6. `-D, --target-domains`: Used to specify the target domains to monitor. Accepts a space-separated list of multiple domain names. For example: `-D example.com example.org`
+7. `-p, --filter-port`: Use this flag followed by a port number to filter by a specific port. For example: `-p 53`
+8. `-s, --filter-src-ip`: Use this flag to filter by a specific source IP address. For example: `-s 192.168.1.1`
+9. `-r, --filter-dst-ip`: Use this flag to filter by a specific destination IP address. For example: `-r 8.8.4.4`
+10. `--dns-type`: Use this flag followed by a DNS type to filter by a specific DNS type. For example: `--dns-type 1` (for type A)
+11. `--pcap-file`: Use this flag to save captured packets to a PCAP file. For example: `--pcap-file captured_packets.pcap`
+12. `--firewall`: Enable DNS firewall mode.
+13. `--threshold`: Use this flag to set the threshold for the number of DNS queries. For example: `--threshold 50`
+14. `--window-size`: Use this flag to set the window size (in seconds). For example: `--window-size 60`
+15. `--version`: Use this flag to display the program's version number.
+
+
 Press `Ctrl+C` to stop the sniffing process.
 
 ## Examples
 
-- Sniff DNS traffic on interface "eth0":
-```bash
-python dnswatch.py -i eth0
-```
+**Usage Examples:**
 
-- Sniff DNS traffic on interface "eth0" and save the results to a file:
-```bash
-python dnswatch.py -i eth0 -o dns_results.txt
-```
+1. **Basic DNS Traffic Monitoring:**
+   ```bash
+   $ python dnswatch.py
+   ```
+   This command starts DNSWatch to monitor DNS traffic on the default network interface.
 
-- Sniff DNS traffic on interface "eth0" and filter requests/responses involving a specific target IP:
-```bash
-python dnswatch.py -i eth0 -t 192.168.1.100
-```
+2. **Monitor DNS Traffic on a Specific Interface:**
+   ```bash
+   $ python dnswatch.py -i eth0
+   ```
+   Use the `-i` flag followed by the interface name to specify the network interface for monitoring DNS traffic.
 
-- Sniff DNS traffic on interface "eth0" and enable DNS type analysis:
-```bash
-python dnswatch.py -i eth0 --analyze-dns-types
-```
+3. **Analyze DNS Responses for a Target IP:**
+   ```bash
+   $ python dnswatch.py -t 192.168.1.1
+   ```
+   Specify a target IP address using the `-t` flag to analyze DNS responses for a specific IP address.
 
-- Sniff DNS traffic on interface "eth0" using DNS over HTTPS (DoH):
+4. **Resolve DNS Using DNS over HTTPS (DoH):**
+   ```bash
+   $ python dnswatch.py --doh
+   ```
+   Enable DNS resolution using DNS over HTTPS (DoH) to resolve DNS queries securely.
 
-```bash
-python dnswatch.py -i eth0 --doh
-```
+5. **Filter DNS Traffic by Port:**
+   ```bash
+   $ python dnswatch.py -p 53
+   ```
+   Use the `-p` flag followed by the port number to filter DNS traffic by source or destination port.
 
-- Sniff DNS traffic on interface "wlan0" and Enable database storage
-```bash
-python3 dnswatch.py -i wlan0 --database
-```
+6. **Filter DNS Traffic by Source IP Address:**
+   ```bash
+   $ python dnswatch.py -s 192.168.1.100
+   ```
+   Specify a source IP address using the `-s` flag to filter DNS traffic by the source IP address.
+
+7. **Filter DNS Traffic by Destination IP Address:**
+   ```bash
+   $ python dnswatch.py -r 8.8.8.8
+   ```
+   Use the `-r` flag followed by the destination IP address to filter DNS traffic by the destination IP address.
+
+8. **Save Captured Packets to a PCAP File:**
+   ```bash
+   $ python dnswatch.py --pcap-file dns_traffic.pcap
+   ```
+   Specify the `--pcap-file` flag followed by the file name to save captured DNS packets to a PCAP file for offline analysis.
+
+9. **Enable DNS Firewall Mode:**
+   ```bash
+   $ python dnswatch.py --firewall
+   ```
+   Use the `--firewall` flag to enable DNS firewall mode for detecting and alerting on suspicious DNS spoofing attempts.
+
+10. **Customize Threshold and Window Size for DNS Firewall:**
+    ```bash
+    $ python dnswatch.py --firewall --threshold 100 --window-size 120
+    ```
+    Customize the threshold and window size for DNS firewall mode using the `--threshold` and `--window-size` flags, respectively.
+
+
 ## License
 
 DNSWatch is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
@@ -98,17 +142,16 @@ DNSWatch is licensed under the MIT License. See the [LICENSE](LICENSE) file for 
 This tool is intended for educational and testing purposes only. It should not be used for any malicious activities.
 
 ## Contact
-- Linktr [halildeniz](https://linktr.ee/halildeniz)
-- DenizHalil [DenizHalil](https://denizhalil.com)
-- LinkedIn: [Halil Ibrahim Deniz](https://www.linkedin.com/in/halil-ibrahim-deniz/)
-- TryHackMe: [Halilovic](https://tryhackme.com/p/halilovic)
-- Instagram: [deniz.halil333](https://www.instagram.com/deniz.halil333/)
-- YouTube: [Halil Deniz](https://www.youtube.com/c/HalilDeniz)
-- Email: halildeniz313@gmail.com
 
+- Email    : halildeniz313@gmail.com
+- Linkedin : https://www.linkedin.com/in/halil-ibrahim-deniz/
+- TryHackMe: https://tryhackme.com/p/halilovic
+- Instagram: https://www.instagram.com/deniz.halil333/
+- YouTube  : https://www.youtube.com/c/HalilDeniz
+- Mysite   : https://denizhalil.com/
 
 ## 💰 You can help me by Donating
-Thank you for considering supporting me! Your support enables me to dedicate more time and effort to creating useful tools like DNSWatch and developing new projects. By contributing, you're not only helping me improve existing tools but also inspiring new ideas and innovations. Your support plays a vital role in the growth of this project and future endeavors. Together, let's continue building and learning. Thank you!"<br>
+Thank you for considering supporting me! Your support enables me to dedicate more time and effort to creating useful tools like DNSWatch and developing new projects. By contributing, you're not only helping me improve existing tools but also inspiring new ideas and innovations. Your support plays a vital role in the growth of this project and future endeavors. Together, let's continue building and learning. Thank you!"
 [![BuyMeACoffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/halildeniz) 
 [![Patreon](https://img.shields.io/badge/Patreon-F96854?style=for-the-badge&logo=patreon&logoColor=white)](https://patreon.com/denizhalil) 
 
