@@ -73,69 +73,9 @@ $ python3 dnswatch.py [-h] [-i INTERFACE] [-v] [-t TARGET_IP] [-d] [--doh] [-D T
 
 Press `Ctrl+C` to stop the sniffing process.
 
-## Examples
+## Usage Examples
 
-**Usage Examples:**
-
-1. **Basic DNS Traffic Monitoring:**
-   ```bash
-   $ python dnswatch.py
-   ```
-   This command starts DNSWatch to monitor DNS traffic on the default network interface.
-
-2. **Monitor DNS Traffic on a Specific Interface:**
-   ```bash
-   $ python dnswatch.py -i eth0
-   ```
-   Use the `-i` flag followed by the interface name to specify the network interface for monitoring DNS traffic.
-
-3. **Analyze DNS Responses for a Target IP:**
-   ```bash
-   $ python dnswatch.py -t 192.168.1.1
-   ```
-   Specify a target IP address using the `-t` flag to analyze DNS responses for a specific IP address.
-
-4. **Resolve DNS Using DNS over HTTPS (DoH):**
-   ```bash
-   $ python dnswatch.py --doh
-   ```
-   Enable DNS resolution using DNS over HTTPS (DoH) to resolve DNS queries securely.
-
-5. **Filter DNS Traffic by Port:**
-   ```bash
-   $ python dnswatch.py -p 53
-   ```
-   Use the `-p` flag followed by the port number to filter DNS traffic by source or destination port.
-
-6. **Filter DNS Traffic by Source IP Address:**
-   ```bash
-   $ python dnswatch.py -s 192.168.1.100
-   ```
-   Specify a source IP address using the `-s` flag to filter DNS traffic by the source IP address.
-
-7. **Filter DNS Traffic by Destination IP Address:**
-   ```bash
-   $ python dnswatch.py -r 8.8.8.8
-   ```
-   Use the `-r` flag followed by the destination IP address to filter DNS traffic by the destination IP address.
-
-8. **Save Captured Packets to a PCAP File:**
-   ```bash
-   $ python dnswatch.py --pcap-file dns_traffic.pcap
-   ```
-   Specify the `--pcap-file` flag followed by the file name to save captured DNS packets to a PCAP file for offline analysis.
-
-9. **Enable DNS Firewall Mode:**
-   ```bash
-   $ python dnswatch.py --firewall
-   ```
-   Use the `--firewall` flag to enable DNS firewall mode for detecting and alerting on suspicious DNS spoofing attempts.
-
-10. **Customize Threshold and Window Size for DNS Firewall:**
-    ```bash
-    $ python dnswatch.py --firewall --threshold 100 --window-size 120
-    ```
-    Customize the threshold and window size for DNS firewall mode using the `--threshold` and `--window-size` flags, respectively.
+Here are some usage examples of DNSWatch: [You can explore it here](https://denizhalil.com/2023/09/05/dnswatch-dns-traffic-analyzer/):
 
 
 ## License
