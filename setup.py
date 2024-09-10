@@ -16,7 +16,7 @@ setup(
         ],
     },
     author='Halil Ibrahim Deniz',
-    long_description=open('Readme.md').read(),
+    long_description=open('README.md').read(),
     author_email='halildeniz313@gmail.com',
     description='DNS sniffer tool',
     license='MIT',
