@@ -167,9 +167,9 @@ class DNSListener:
 
     def listen(self):
         if self.interface:
-            sniff(filter="udp or tcp port 53", prn=self.process_packet, store=0, iface=self.interface)
+            sniff(filter="udp port 53 or tcp port 53", prn=self.process_packet, store=0, iface=self.interface)
         else:
-            sniff(filter="udp or tcp port 53", prn=self.process_packet, store=0)
+            sniff(filter="udp port 53 or tcp port 53", prn=self.process_packet, store=0)
 
     def print_summary(self):
         dns_type_names = {1: "A", 2: "NS", 5: "CNAME", 12: "PTR", 41: "OPT", 28: "AAAA", 17: "RP"}
